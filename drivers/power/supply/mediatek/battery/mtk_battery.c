@@ -1709,8 +1709,8 @@ int force_get_tbat_internal(bool update)
 
 int force_get_tbat(bool update)
 {
-	int bat_temperature_val = 0;
-	int counts = 0;
+	//int bat_temperature_val = 0;
+	//int counts = 0;
 
 	if (is_fg_disabled()) {
 		bm_debug("[%s] fixed TBAT=25 t\n",
@@ -1719,7 +1719,8 @@ int force_get_tbat(bool update)
 		return 25;
 	}
 
-#if defined(FIXED_TBAT_25)
+//#if defined(FIXED_TBAT_25)
+#if 1
 	bm_debug("[%s] fixed TBAT=25 t\n", __func__);
 	gm.tbat_precise = 250;
 	return 25;
@@ -3792,27 +3793,18 @@ static ssize_t store_BAT_HEALTH(
 	char *s = buf_str, *pch;
 	/* char *ori = buf_str; */
 	int chr_size = 0;
-	int i = 0, j = 0, count = 0, value[50];
+	int i = 0, count = 0, value[50];
 
 
 	bm_err("%s, size =%d, str=%s\n", __func__, size, buf);
 
-	if (size < 90 || size > 350) {
-		bm_err("%s error, size mismatch\n", __func__);
-		return -1;
-	} else {
-		for (i = 0; i < strlen(buf); i++) {
-			if (buf[i] == ',')
-				j++;
-		}
-		if (j != 46) {
-			bm_err("%s error, invalid input\n", __func__);
-			return -1;
-		}
-	}
-
 	strncpy(buf_str, buf, size);
 	/* bm_err("%s, copy str=%s\n", __func__, buf_str); */
+
+	if (size > 350) {
+		bm_err("%s error, size mismatch\n", __func__);
+		return -1;
+	}
 
 	if (buf != NULL && size != 0) {
 

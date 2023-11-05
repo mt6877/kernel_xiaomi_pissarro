@@ -1,4 +1,14 @@
 # SPDX-License-Identifier: GPL-2.0
+export MTK_PLATFORM := $(subst ",,$(CONFIG_MTK_PLATFORM))
+subdir-ccflags-y += -Werror
+
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include/
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/
+subdir-ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/$(MTK_PLATFORM)/
+subdir-ccflags-y += -I$(srctree)/drivers/gpu/drm/mediatek/
+subdir-ccflags-y += -I$(srctree)/drivers/gpu/drm/mediatek/mi_disp/
+
 obj-$(CONFIG_DRM_PANEL_LVDS) += panel-lvds.o
 obj-$(CONFIG_DRM_PANEL_SIMPLE) += panel-simple.o
 obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
@@ -30,7 +40,6 @@ obj-$(CONFIG_DRM_PANEL_TIANMA_R66451_CMD_NO_MIPI_SWITCH) += panel-tianma-r66451-
 obj-$(CONFIG_DRM_PANEL_TIANMA_R66451_CMD_120HZ_NO_MIPI_SWITCH) += panel-tianma-r66451-cmd-120hz-no-mipi-switch.o
 obj-$(CONFIG_DRM_PANEL_TRULY_TD4330_VDO_FAKE_WCG) += panel-truly-td4330-vdo-fake-wcg.o
 obj-$(CONFIG_DRM_PANEL_TIANMA_R66451_CMD_120HZ) += panel-tianma-r66451-cmd-120hz.o
-obj-$(CONFIG_DRM_PANEL_TIANMA_R66451_CMD_120HZ_6382) += panel-tianma-r66451-cmd-120hz-6382.o
 obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672C_CPHY_VDO) += panel-tianma-nt36672c-cphy-vdo.o
 obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672C_CPHY_VDO_90HZ_RT4801) += panel-tianma-nt36672c-cphy-vdo-90hz-rt4801.o
 obj-$(CONFIG_DRM_PANEL_JDI_NT36672C_CPHY_VDO) += panel-jdi-nt36672c-cphy-vdo.o
@@ -47,7 +56,6 @@ obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672C_CPHY_VDO_90HZ_RT4801_HFP) += panel-tianma
 obj-$(CONFIG_DRM_PANEL_JDI_NT36672C_CPHY_VDO_90HZ_RT4801_HFP) += panel-jdi-nt36672c-cphy-vdo-90hz-rt4801-hfp.o
 obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672E_VDO_120HZ_HFP) += panel-tianma-nt36672e-vdo-120hz-hfp.o
 obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672E_VDO_120HZ_VFP) += panel-tianma-nt36672e-vdo-120hz-vfp.o
-obj-$(CONFIG_DRM_PANEL_TIANMA_NT36672E_VDO_120HZ_VFP_6382) += panel-tianma-nt36672e-vdo-120hz-vfp-6382.o
 obj-$(CONFIG_DRM_PANEL_K6853V1_64_ALPHA_VDO_01) += k6853v1_64_alpha/panel-k6853v1-64-alpha-vdo-01.o
 obj-$(CONFIG_DRM_PANEL_K6853V1_64_ALPHA_VDO_02) += k6853v1_64_alpha/panel-k6853v1-64-alpha-vdo-02.o
 obj-$(CONFIG_DRM_PANEL_K6853V1_64_ALPHA_VDO_02) += k6853v1_64_alpha/panel-k6853v1-64-alpha-vdo-03.o
@@ -68,5 +76,11 @@ obj-$(CONFIG_DRM_PANEL_TRULY_NT35595_CMD) += panel-truly-nt35595-cmd.o
 obj-$(CONFIG_DRM_PANEL_TRULY_NT35595_VDO) += panel-truly-nt35595-vdo.o
 obj-$(CONFIG_DRM_PANEL_TRULY_ILI9881H_VDO) += panel-truly-ili9881h-rt4801-vdo.o
 obj-$(CONFIG_DRM_PANEL_TRULY_ILI9882N_VDO_90HZ) += panel-truly-ili9882n-rt4801-vdo-90hz.o
-obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692H0) += panel-raydium-rm692h0-cmd-120hz.o
-
+obj-$(CONFIG_DRM_PANEL_K10_42_02_0A_DSC_CMD) += panel-k10-42-02-0a-dsc-cmd.o
+obj-$(CONFIG_DRM_PANEL_K10_42_02_0A_DSC_CMD) += aw2028_led.o
+obj-$(CONFIG_DRM_PANEL_K10A_36_02_0A_DSC_VDO) += panel-k10a-36-02-0a-dsc-vdo.o
+obj-$(CONFIG_DRM_PANEL_K10A_42_02_0B_DSC_VDO) += panel-k10a-42-02-0b-dsc-vdo.o
+obj-$(CONFIG_DRM_PANEL_K10A_36_02_0A_DSC_VDO) += leds-lm36273.o
+obj-$(CONFIG_DRM_PANEL_K11T_42_02_0A_DSC_CMD) += panel-k11t-42-02-0a-dsc-cmd.o
+obj-$(CONFIG_DRM_PANEL_K16_38_0C_0A_DSC_VDO) += panel-k16-38-0c-0a-dsc-vdo.o
+obj-$(CONFIG_DRM_PANEL_K16_38_0E_0B_DSC_VDO) += panel-k16-38-0e-0b-dsc-vdo.o

@@ -653,9 +653,9 @@ static int ion_handle_add(struct ion_client *client, struct ion_handle *handle)
 	return 0;
 }
 
-struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
-			       size_t align, unsigned int heap_id_mask,
-			       unsigned int flags, bool grab_handle)
+struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
+			     size_t align, unsigned int heap_id_mask,
+			     unsigned int flags)
 {
 	struct ion_handle *handle;
 	struct ion_device *dev = client->dev;
@@ -743,19 +743,14 @@ struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
 	mutex_lock(&client->lock);
 	ret = ion_handle_add(client, handle);
 	ion_client_buf_add(heap, client, len);
-	if (!ret && grab_handle)
-		ion_handle_get(handle);
 	mutex_unlock(&client->lock);
-	end = sched_clock();
 	if (ret) {
 		ion_handle_put(handle);
 		handle = ERR_PTR(ret);
 		IONMSG("%s ion handle add failed %d.\n", __func__, ret);
-	} else {
-		handle->dbg.user_ts = end;
-		do_div(handle->dbg.user_ts, 1000000);
-		memcpy(buffer->alloc_dbg, client->dbg_name, ION_MM_DBG_NAME_LEN);
 	}
+
+	end = sched_clock();
 
 	if (end - start > 100000000ULL) {/* unit is ns */
 		IONMSG("warn: ion alloc buffer size: %zu time: %lld ns\n",
@@ -771,14 +766,11 @@ struct ion_handle *__ion_alloc(struct ion_client *client, size_t len,
 #endif
 #endif
 
-	return handle;
-}
+	handle->dbg.user_ts = end;
+	do_div(handle->dbg.user_ts, 1000000);
+	memcpy(buffer->alloc_dbg, client->dbg_name, ION_MM_DBG_NAME_LEN);
 
-struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
-			     size_t align, unsigned int heap_id_mask,
-			     unsigned int flags)
-{
-	return __ion_alloc(client, len, align, heap_id_mask, flags, false);
+	return handle;
 }
 EXPORT_SYMBOL(ion_alloc);
 
@@ -832,11 +824,6 @@ static void *ion_buffer_kmap_get(struct ion_buffer *buffer)
 {
 	void *vaddr;
 
-	if (buffer->kmap_cnt + 1 == 0) {
-		IONMSG("%s overflow\n", __func__);
-		return ERR_PTR(-EOVERFLOW);
-	}
-
 	if (buffer->kmap_cnt) {
 		buffer->kmap_cnt++;
 		return buffer->vaddr;
@@ -861,11 +848,6 @@ static void *ion_handle_kmap_get(struct ion_handle *handle)
 {
 	struct ion_buffer *buffer = handle->buffer;
 	void *vaddr;
-
-	if (handle->kmap_cnt + 1 == 0) {
-		IONMSG("%s overflow\n", __func__);
-		return ERR_PTR(-EOVERFLOW);
-	}
 
 	if (handle->kmap_cnt) {
 		handle->kmap_cnt++;
@@ -911,7 +893,6 @@ static void ion_handle_kmap_put(struct ion_handle *handle)
 
 void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle)
 {
-	struct ion_handle *handle_ret;
 	struct ion_buffer *buffer;
 	void *vaddr;
 
@@ -932,13 +913,6 @@ void *ion_map_kernel(struct ion_client *client, struct ion_handle *handle)
 		return ERR_PTR(-ENODEV);
 	}
 
-	handle_ret = ion_handle_get_check_overflow(handle);
-	if (IS_ERR(handle_ret)) {
-		mutex_unlock(&client->lock);
-		WARN(1, "%s: handle get fail %ld.\n", __func__,
-		     PTR_ERR(handle_ret));
-		return handle_ret;
-	}
 	mutex_lock(&buffer->lock);
 	vaddr = ion_handle_kmap_get(handle);
 	mutex_unlock(&buffer->lock);
@@ -956,8 +930,6 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 	mutex_lock(&buffer->lock);
 	ion_handle_kmap_put(handle);
 	mutex_unlock(&buffer->lock);
-
-	ion_handle_put_nolock(handle);
 	mutex_unlock(&client->lock);
 }
 EXPORT_SYMBOL(ion_unmap_kernel);
@@ -1487,6 +1459,7 @@ retry:
 						heap->ops->get_table(buffer,
 								a->table);
 					} else {
+						mutex_unlock(&buffer->lock);
 						IONMSG(
 						       "error, heap:%u get_table not support!\n",
 						       heap->id);
@@ -1641,7 +1614,6 @@ static int ion_vm_fault(struct vm_fault *vmf)
 	mutex_lock(&buffer->lock);
 	ion_buffer_page_dirty(buffer->pages + vmf->pgoff);
 	if (!buffer->pages[vmf->pgoff]) {
-		mutex_unlock(&buffer->lock);
 		WARN_ON(1);
 		return VM_FAULT_ERROR;
 	}
@@ -1970,7 +1942,7 @@ struct ion_handle *ion_import_dma_buf(struct ion_client *client,
 	/* if a handle exists for this buffer just take a reference to it */
 	handle = ion_handle_lookup(client, buffer);
 	if (!IS_ERR(handle)) {
-		handle = ion_handle_get_check_overflow(handle);
+		ion_handle_get_check_overflow(handle);
 		mutex_unlock(&client->lock);
 		goto end;
 	}
