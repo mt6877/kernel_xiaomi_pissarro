@@ -63,6 +63,9 @@ export CFG_BUILD_CONNAC2=true
 export MTK_PLATFORM_WMT=$(MTK_PLATFORM)
 export TARGET_BOARD_PLATFORM_WMT=$(patsubst CONSYS_%,mt%,$(subst ",,$(CONFIG_MTK_COMBO_CHIP)))
 
+# Remove debugging
+export TARGET_BUILD_VARIANT=user
+
 # Do build-in for xxx.c checking
 subdir-ccflags-y += -D MTK_WCN_REMOVE_KERNEL_MODULE
 subdir-ccflags-y += -D MTK_WCN_BUILT_IN_DRIVER
