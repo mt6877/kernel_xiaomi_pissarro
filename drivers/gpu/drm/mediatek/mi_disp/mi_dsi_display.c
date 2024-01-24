@@ -391,9 +391,9 @@ void mi_dsi_display_wakeup_pending_doze_work(void *display)
 	}
 
 	dd_ptr = &df->d_display[MI_DISP_PRIMARY];
-	DISP_INFO("pending_doze_cnt = %d\n", atomic_read(&dd_ptr->pending_doze_cnt));
+	DISP_DEBUG("pending_doze_cnt = %d\n", atomic_read(&dd_ptr->pending_doze_cnt));
 	if (atomic_read(&dd_ptr->pending_doze_cnt)) {
-		DISP_INFO("display wake up pending doze brightness work\n");
+		DISP_DEBUG("display wake up pending doze brightness work\n");
 		wake_up_all(&dd_ptr->pending_wq);
 	}
 

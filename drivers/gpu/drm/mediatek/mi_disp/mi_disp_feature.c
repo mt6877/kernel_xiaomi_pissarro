@@ -81,7 +81,7 @@ static int mi_disp_feature_thread_create(struct disp_feature *df, int disp_id)
 			DISP_ERROR("failed to create disp_feature kthread\n");
 			dt_ptr->thread = NULL;
 		}
-		DISP_INFO("create disp_feature:%d kthread success\n", disp_id);
+		DISP_DEBUG("create disp_feature:%d kthread success\n", disp_id);
 	} else {
 		DISP_ERROR("Unknown display id, failed to create disp_feature kthread\n");
 	}
@@ -107,7 +107,7 @@ static int mi_disp_feature_thread_destroy(struct disp_feature *df, int disp_id)
 			dt_ptr->thread = NULL;
 		}
 		dt_ptr->dd_ptr = NULL;
-		DISP_INFO("destroy disp_feature:%d kthread success\n", disp_id);
+		DISP_DEBUG("destroy disp_feature:%d kthread success\n", disp_id);
 	} else {
 		DISP_ERROR("Unknown display id, failed to destroy disp_feature kthread\n");
 	}
@@ -171,7 +171,7 @@ int mi_disp_feature_attach_display(void *display, int disp_id, int intf_type)
 			goto err_procfs;
 		}
 
-		DISP_INFO("attach %s display(%s intf) success\n", get_disp_id_name(disp_id),
+		DISP_DEBUG("attach %s display(%s intf) success\n", get_disp_id_name(disp_id),
 				get_disp_intf_type_name(intf_type));
 
 		atomic_set(&dd_ptr->pending_doze_cnt, 0);
@@ -227,7 +227,7 @@ int mi_disp_feature_detach_display(void *display, int disp_id, int intf_type)
 
 		dd_ptr->display = NULL;
 		dd_ptr->intf_type = MI_INTF_MAX;
-		DISP_INFO("detach %s display(%s intf) success\n", get_disp_id_name(disp_id),
+		DISP_DEBUG("detach %s display(%s intf) success\n", get_disp_id_name(disp_id),
 				get_disp_intf_type_name(intf_type));
 	} else {
 		DISP_ERROR("Unknown display or interface, failed to unbind\n");
@@ -562,7 +562,7 @@ int mi_disp_feature_init(void)
 		return -ENODEV;
 
 	if (g_disp_feature) {
-		pr_info("mi disp_feature already initialized, return!\n");
+		pr_debug("mi disp_feature already initialized, return!\n");
 		return 0;
 	}
 
@@ -611,7 +611,7 @@ int mi_disp_feature_init(void)
 
 	g_disp_feature = df;
 
-	pr_info("mi disp_feature driver initialized!\n");
+	pr_debug("mi_disp_feature driver initialized!\n");
 
 	return 0;
 
