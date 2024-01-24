@@ -52,7 +52,7 @@ static struct scp_elliptic_reserved_mem_t debug_segment;
 int32_t elliptic_debug_io_open(void)
 {
 
-	pr_info("[ELUS] %s()", __func__);
+	pr_debug("[ELUS] %s()", __func__);
 	if (debug_segment.reserved == 0) {
 		debug_segment.phys =
 			scp_get_reserve_mem_phys(SCP_ELLIPTIC_DEBUG_MEM);
@@ -69,7 +69,7 @@ int32_t elliptic_debug_io_open(void)
 
 int32_t elliptic_debug_io_close(void)
 {
-	pr_info("[ELUS] %s()", __func__);
+	pr_debug("[ELUS] %s()", __func__);
 	return 0;
 }
 
@@ -81,7 +81,7 @@ static void copy_to_local_ap_cache(
 		struct elliptic_shared_data_block *data_block =
 		    elliptic_get_shared_obj(shared_object_id);
 		memcpy(data_block->buffer, payload, shared_object_size);
-		pr_info("[ELUS] %s copied to local AP cache, size: %u",
+		pr_debug("[ELUS] %s copied to local AP cache, size: %u",
 			       name, msg_header->data_size);
 	} else {
 		pr_debug("[ELUS] %s - illegal size: %u",
@@ -134,13 +134,13 @@ void elliptic_data_io_ipi_handler(
 		header = get_header(dram_payload, current_ipi_counter);
 		if (header != NULL) {
 			payload = header + 1;
-			pr_info("[ELUS] Got data via dram payload, counter: %u",
+			pr_debug("[ELUS] Got data via dram payload, counter: %u",
 				current_ipi_counter);
 		} else if (current_ipi_counter == target_ipi_message_count) {
 			// if not in dram buffer, it might be a small message in the ipi buffer
 			header = &ipi_msg->header;
 			payload = ipi_msg->data;
-			pr_info("[ELUS] Got data via ipi payload, addr: %p", payload);
+			pr_debug("[ELUS] Got data via ipi payload, addr: %p", payload);
 		} else if (header == NULL) {
 			// message seems to be lost
 			pr_err("[ELUS] did not find payload with id %u",
@@ -148,9 +148,9 @@ void elliptic_data_io_ipi_handler(
 			continue;
 		}
 
-		pr_info("[ELUS] dram_payload: %p ipi_msg: %p", dram_payload, ipi_msg);
+		pr_debug("[ELUS] dram_payload: %p ipi_msg: %p", dram_payload, ipi_msg);
 
-		pr_info("[ELUS] header->parameter_id = %u len:%u",
+		pr_debug("[ELUS] header->parameter_id = %u len:%u",
 				header->parameter_id,
 				header->data_size);
 
@@ -191,7 +191,7 @@ void elliptic_data_io_ipi_handler(
 					       header, payload);
 			break;
 		case ELLIPTIC_ULTRASOUND_PARAM_ID_ENGINE_DATA:
-			pr_info("[ELUS] engine data push to device %u",
+			pr_debug("[ELUS] engine data push to device %u",
 					header->data_size);
 			ret = elliptic_data_push(ELLIPTIC_ALL_DEVICES,
 						 payload,
@@ -276,7 +276,7 @@ int32_t elliptic_data_io_write(uint32_t message_id, const char *data,
 
 int elliptic_data_io_cleanup(void)
 {
-	pr_info("[ELUS] Unimplemented");
+	pr_debug("[ELUS] Unimplemented");
 	return 0;
 }
 
