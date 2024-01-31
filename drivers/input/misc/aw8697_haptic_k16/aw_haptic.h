@@ -13,18 +13,18 @@
  * print information control
  *******************************************/
 #define aw_dev_err(dev, format, ...) \
-			pr_err("[%s]" format, dev_name(dev), ##__VA_ARGS__)
+			pr_debug("[%s]" format, dev_name(dev), ##__VA_ARGS__)
 
 #define aw_dev_info(dev, format, ...) \
-			pr_info("[%s]" format, dev_name(dev), ##__VA_ARGS__)
+			pr_debug("[%s]" format, dev_name(dev), ##__VA_ARGS__)
 
 #define aw_dev_dbg(dev, format, ...) \
 			pr_debug("[%s]" format, dev_name(dev), ##__VA_ARGS__)
 
 #define aw_err(format, ...) \
-	                pr_err("[awinic_haptic]" format, ##__VA_ARGS__)
+	                pr_debug("[awinic_haptic]" format, ##__VA_ARGS__)
 #define aw_info(format, ...) \
-			pr_info("[awinic_haptic]" format, ##__VA_ARGS__)
+			pr_debug("[awinic_haptic]" format, ##__VA_ARGS__)
 #define aw_dbg(format, ...) \
 			pr_debug("[awinic_haptic]" format, ##__VA_ARGS__)
 /*********************************************************
