@@ -236,7 +236,7 @@ static const struct mt6360_chg_platform_data def_platform_data = {
 };
 
 static int product_name = PISSARRO;
-static int log_level = 2;
+static int log_level = 0;
 
 #define pmu_err(fmt, ...)						\
 do {									\

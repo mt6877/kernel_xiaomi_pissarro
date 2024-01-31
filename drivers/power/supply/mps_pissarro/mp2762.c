@@ -130,7 +130,7 @@ static struct adc_desc adc_desc_table[] = {
 };
 
 static int product_name = PISSARRO;
-static int log_level = 2;
+static int log_level = 0;
 
 static const struct regmap_config mp2762_regmap_config = {
 	.reg_bits = 8,

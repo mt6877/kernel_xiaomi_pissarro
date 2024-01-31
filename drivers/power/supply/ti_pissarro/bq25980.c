@@ -30,7 +30,7 @@ enum product_name {
 	PISSARROPRO,
 };
 
-static int log_level = 2;
+static int log_level = 0;
 static int product_name = PISSARRO;
 
 #define bq_err(fmt, ...)					\

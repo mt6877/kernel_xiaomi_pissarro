@@ -125,7 +125,7 @@ static struct regmap_config sc8551_regmap_config = {
 };
 
 extern char *saved_command_line;
-static int log_level = 2;
+static int log_level = 0;
 static int product_name = PISSARRO;
 static int fake_work_mode = SC8551_MASTER;
 

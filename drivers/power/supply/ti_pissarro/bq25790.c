@@ -151,7 +151,7 @@ struct bq25790 {
 
 static int product_name = PISSARRO;
 static void bq25790_update_status(struct bq25790 *bq);
-static int log_level = 2;
+static int log_level = 0;
 
 #define bq_err(fmt, ...)							\
 do {										\
